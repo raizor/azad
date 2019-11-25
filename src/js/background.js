@@ -18,7 +18,9 @@ function registerConnectionListener() {
                 port.onMessage.addListener( msg => {
                     switch(msg.action) {
                         case 'scrape_complete':
-                            control_port.postMessage(msg);
+                            if (control_port) {
+                                control_port.postMessage(msg);
+                            }
                             break;
                         case 'advertise_years':
                             console.log('forwarding advertise_years', msg.years);
@@ -28,7 +30,9 @@ function registerConnectionListener() {
                             advertiseYears();
                             break;
                         case 'statistics_update':
-                            control_port.postMessage(msg);
+                            if (control_port) {
+                                control_port.postMessage(msg);
+                            }
                             break;
                         default:
                             console.warn('unknown action: ' + msg.action);
@@ -38,22 +42,25 @@ function registerConnectionListener() {
                 break;
             case 'azad_control':
                 control_port = port;
-                port.onMessage.addListener( msg => {
+                control_port.onDisconnect.addListener( () => {
+                    control_port = null;
+                } );
+                control_port.onMessage.addListener( msg => {
                     switch(msg.action) {
                         case 'scrape_years':
                             console.log('forwarding scrape_years', + msg.years);
-                            Object.values(content_ports).forEach( port =>
-                                port.postMessage(msg)
+                            Object.values(content_ports).forEach( content_port =>
+                                content_port.postMessage(msg)
                             );
                             break;
                         case 'clear_cache':
-                            Object.values(content_ports).forEach( port =>
-                                port.postMessage(msg)
+                            Object.values(content_ports).forEach( content_port =>
+                                content_port.postMessage(msg)
                             );
                             break;
                         case 'abort':
-                            Object.values(content_ports).forEach( port =>
-                                port.postMessage(msg)
+                            Object.values(content_ports).forEach( content_port =>
+                                content_port.postMessage(msg)
                             );
                             break;
                         default:
@@ -113,10 +120,14 @@ function registerMessageListener() {
 function advertiseYears() {
     if (control_port) {
         console.log('advertising years', advertised_years);
-        control_port.postMessage({
-            action: 'advertise_years',
-            years: advertised_years
-        });
+        try {
+            control_port.postMessage({
+                action: 'advertise_years',
+                years: advertised_years
+            });
+        } catch (ex) {
+            console.warn('we tried to advertise years to control port, but it was broken: ' + ex);
+        }
     } else {
         console.log('cannot advertise years yet: no control port is set');
     }

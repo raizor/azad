@@ -181,6 +181,7 @@ class RequestScheduler {
         if (!this.live) {
             return;
         }
+
         console.log(
             'Executing ' + query +
             ' with queue size ' + this.queue.size() +
@@ -229,6 +230,10 @@ class RequestScheduler {
         this.running_count += 1;
         setTimeout(
             () => {
+                console.log(
+                  'Finished ' + query +
+                  ' with queue size ' + this.queue.size()
+                );
                 this._executeSomeIfPossible();
                 callback(cached_response, query);
                 this.running_count -= 1;
@@ -280,7 +285,8 @@ class RequestScheduler {
             }
             console.log(
               'Finished ' + query +
-                ' with queue size ' + this.queue.size());
+              ' with queue size ' + this.queue.size()
+            );
             this._executeSomeIfPossible();
             const converted = event_converter(evt);
             if (!nocache) {
