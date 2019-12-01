@@ -62,7 +62,7 @@ function extractDetailFromDoc(order, doc) {
             )
         );
     };
-// wrap in try/catch for missing total
+
     const total = function(){
         const a = extraction.by_regex(
             [
@@ -106,6 +106,7 @@ function extractDetailFromDoc(order, doc) {
         }
         return a;
     };
+
 // BUG: Need to exclude gift wrap
     const gift = function(){
         const a = extraction.by_regex(
@@ -134,6 +135,7 @@ function extractDetailFromDoc(order, doc) {
         }
         return null;
     };
+
     const postage = function() {
         return extraction.by_regex(
             [
@@ -151,6 +153,7 @@ function extractDetailFromDoc(order, doc) {
             doc.documentElement
         );
     };
+
     const vat = function() {
         const xpaths = ['VAT', 'tax', 'TVA', 'IVA'].map(
             label =>
@@ -184,6 +187,7 @@ function extractDetailFromDoc(order, doc) {
         }
         return a;
     };
+
     const us_tax = function(){
         let a = getField(
             '//span[contains(text(),"Estimated tax to be collected:")]/../../div[2]/span/text()',
@@ -235,6 +239,7 @@ function extractDetailFromDoc(order, doc) {
         }
         return null;
     };
+
     const cad_pst = function(){
         const a = extraction.by_regex(
             [
@@ -520,6 +525,7 @@ function getOrdersForYearAndQueryTemplate(
             nocache_top_level
         );
     };
+
     const generateQueryString = function(start_order_pos) {
         return sprintf.sprintf(
             query_template,
@@ -530,6 +536,7 @@ function getOrdersForYearAndQueryTemplate(
             }
         );
     };
+
     const convertOrdersPage = function(evt) {
         const d = util.parseStringToDOM(evt.target.responseText);
         const countSpan = util.findSingleNodeValue(
@@ -572,6 +579,7 @@ function getOrdersForYearAndQueryTemplate(
             order_elems: order_elems.map( elem => dom2json.toJSON(elem) ),
         };
     };
+
     const receiveOrdersCount = function(orders_page_data) {
         expected_order_count = orders_page_data.expected_order_count;
         check_complete_callback();
@@ -589,6 +597,7 @@ function getOrdersForYearAndQueryTemplate(
             );
         }
     };
+
     const receiveOrdersPageData = function(orders_page_data, src_query) {
         const order_elems = orders_page_data.order_elems.map(
             elem => dom2json.toDOM(elem)
