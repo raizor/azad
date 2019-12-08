@@ -123,6 +123,22 @@ function clearBody() {
     );
 }
 
+function textNodes(elem){
+  const a = [];
+  const walk = elem.createTreeWalker(
+      elem,
+      NodeFilter.SHOW_TEXT,
+      null,
+      false
+  );
+  let n = walk.nextNode();
+  while (n) {
+      a.push(n);
+      n = walk.nextNode();
+  }
+  return a;
+}
+
 export default {
     addButton: addButton,
     clearBody: clearBody,
@@ -133,5 +149,6 @@ export default {
     getSite: getSite,
     isNumeric: isNumeric,
     parseStringToDOM: parseStringToDOM,
-    removeButton: removeButton
+    removeButton: removeButton,
+    textNodes: textNodes,
 };

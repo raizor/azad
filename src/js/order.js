@@ -8,6 +8,7 @@
 import util from './util';
 import date from './date';
 import extraction from './extraction';
+import payment_stuff from './payment';
 import sprintf from 'sprintf-js';
 import dom2json from './dom2json';
 
@@ -299,10 +300,13 @@ function extractDetailFromDoc(order, doc) {
 }
 
 const extractDetailPromise = (order, request_scheduler) => new Promise(
-    resolve => {
+    (resolve, reject) => {
         const query = order.detail_url;
         const event_converter = function(evt) {
             const doc = util.parseStringToDOM( evt.target.responseText );
+            if (order.is_digital) {
+                payment_stuff.paymentFromDigitalOrder(order.id, doc);
+            }
             return extractDetailFromDoc(order, doc);
         };
         try {
@@ -315,7 +319,10 @@ const extractDetailPromise = (order, request_scheduler) => new Promise(
                 order.id
             );
         } catch (ex) {
-            console.error('scheduler rejected ' + order.id + ' ' + query);
+            const msg = 'scheduler rejected ' + order.id +
+                  ' ' + query + ' because: ' + ex;
+            console.error( msg );
+            reject( msg );
         }
     }
 );
@@ -351,7 +358,13 @@ class Order {
         ];
         if (detail_keys.includes(key)) {
             return this.detail_promise.then(
-                detail => detail[key]
+                detail => {
+                    if (detail) {
+                        return detail[key];
+                    } else {
+                        console.warn('got stuck here');
+                    }
+                }
             );
         }
         if (key == 'payments') {
@@ -423,6 +436,7 @@ class Order {
             .map( el => el.getAttribute('href') )
             .map( href => href.match(/.*orderID=([A-Z0-9-]*).*/) )
             .filter( match => match )[0][1];
+        this.is_digital = this.id.startsWith('D');
         this.site = this.list_url.match(/.*\/\/([^/]*)/)[1];
         this.detail_url = util.getOrderDetailUrl(this.id, this.site);
         this.invoice_url = util.getOrderPaymentUrl(this.id, this.site);
@@ -458,11 +472,9 @@ class Order {
         );
     }
 
-    /**
-     * Creates an html element suitable for embedding into a table cell
-     * but doesn't actually embed it.
-     * @param {document} doc. DOM document needed to create elements.
-     */
+    /// Creates an html element suitable for embedding into a table cell
+    /// but doesn't actually embed it.
+    /// @param {document} doc. DOM document needed to create elements.
     itemsHtml(doc) {
         const ul = doc.createElement('ul');
         for(let title in this.items) {

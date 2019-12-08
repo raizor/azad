@@ -215,8 +215,6 @@ function reallyDisplayOrders(orders, beautiful) {
                 }
                 let elem = null;
                 switch(col_spec.type) {
-                    // This seems to be only for when info is available already and no initial prep is needed.
-                    // Seems like the item description could use this also.
                     case 'promise':
                         {
                             elem = addCell(tr, 'pending');
