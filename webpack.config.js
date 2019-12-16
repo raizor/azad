@@ -6,6 +6,7 @@ const env = require("./utils/env");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const WriteFilePlugin = require("write-file-webpack-plugin");
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 // load the secrets
 const alias = {};
@@ -20,6 +21,7 @@ const chrome_extension_options = {
         background: path.join(__dirname, "src", "js", "background.js"),
         control: path.join(__dirname, "src", "js", "control.js"),
         alltests: path.join(__dirname, "src", "tests", "all.js"),
+        popup: path.join(__dirname, "src", "html", "popup.vue"),
     },
     output: {
         path: path.join(__dirname, "build"),
@@ -30,38 +32,34 @@ const chrome_extension_options = {
             {
                 test: /\.css$/,
                 use: ['style-loader','css-loader']
-            },
-            {
+            }, {
                 test: new RegExp('\.(' + fileExtensions.join('|') + ')$'),
                 loader: "file-loader?name=[name].[ext]",
                 exclude: /node_modules/
-            },
-            {
-                test: /\.html$/,
-                loader: "html-loader",
-                exclude: /node_modules/
-            },
-            {
+            }, {
                 test: /\.vue$/,
                 loader: 'vue-loader',
-                options: {
-                    loaders: {
-                    }
-                    // other vue-loader options go here
-                }
             },
         ]
     },
     resolve: {
         alias: {
-            'vue$': 'vue/dist/vue.js'
+            'vue$': 'vue/dist/vue.js',
         }
     },
     plugins: [
+        new VueLoaderPlugin(),
+
+        new webpack.LoaderOptionsPlugin({
+            debug: true
+        }),
+
         // clean the build folder
         new CleanWebpackPlugin(),
+
         // expose and write the allowed env vars on the compiled bundle
         new webpack.EnvironmentPlugin(["NODE_ENV"]),
+
         new CopyWebpackPlugin([{
             from: "src/manifest.json",
             transform: function (content, path) {

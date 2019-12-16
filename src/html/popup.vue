@@ -6,53 +6,54 @@
     <link rel="stylesheet" type="text/css" href="./popup.css" />
   </head>
   <body>
-      <div id="azad_actions">
-          <input type="button" class="azad_action" id="azad_clear_cache"
-                 value="clear cache" title="empty the query cache"/>
-          <input type="button" class="azad_action" id="azad_stop"
-                 value="stop" title="stop scraping"/>
-          <input type="button" class="azad_action" id="azad_hide_controls"
-                 value="&#x2716" title="hide this popup"/>
-      </div>
-      <div class="azad_separator"></div>
-      <div id="azad_year_list">
-          <input type="button" class="azad_year_button" value="2027" />
-          <input type="button" class="azad_year_button" value="2097" />
-      </div>
-      <div class="azad_separator"></div>
-      <div id="azad_info">
-          <table>
-              <tr>
-                  <td>
-                      <div id="azad_state">idle</div>
-                  </td>
-                  <td>
-                      <div id="azad_statistics" />
-                  </td>
-              </tr>
-          </table>
-      </div>
-      <div class="azad_separator"></div>
-      <div id="azad_settings">
-          <table>
-              <tr id="azad_settings_row">
-                  <td v-for="item in items">
-                      {{item.text}}
-                  </td>
-              </tr>
-          </table>
-      </div>
-      <div class="azad_separator"></div>
-      <div id="footer">
-          <a href='http://www.justgiving.com/azad-pah'
-             title='JustGiving - Sponsor me now!'
-             target='_blank' >
-              <img src='http://www.justgiving.com/App_Themes/JustGiving/images/badges/badge9.gif'
-                   width='80'
-                   height='60'
-                   alt='JustGiving - Sponsor me now!' />
-          </a>
-      </div>
-      <script src="control.bundle.js"></script> 
+    <div id="azad_actions">
+      <input type="button" class="azad_action" id="azad_clear_cache"
+             value="clear cache" title="empty the query cache"/>
+      <input type="button" class="azad_action" id="azad_stop"
+             value="stop" title="stop scraping"/>
+      <input type="button" class="azad_action" id="azad_hide_controls"
+             value="&#x2716" title="hide this popup"/>
+    </div>
+    <div class="azad_separator"></div>
+    <div id="azad_year_list">
+      <input type="button" class="azad_year_button" value="2027" />
+      <input type="button" class="azad_year_button" value="2097" />
+    </div>
+    <div class="azad_separator"></div>
+    <div id="azad_info">
+      <table>
+        <tr>
+          <td>
+            <div id="azad_state">idle</div>
+          </td>
+          <td>
+            <div id="azad_statistics" />
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="azad_separator"></div>
+    <div>
+      <table id="azad_settings">
+        <tr>
+          <td v-for="item in items">
+            <input type="checkbox" id="checkbox_{{item.id}}" v-model="item.value">
+            <label for="checkbox">{{ item.text }}</label>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="azad_separator"></div>
+    <div id="footer">
+      <a href='http://www.justgiving.com/azad-pah'
+         title='JustGiving - Sponsor me now!'
+         target='_blank' >
+          <img src='http://www.justgiving.com/App_Themes/JustGiving/images/badges/badge9.gif'
+               width='80'
+               height='60'
+               alt='JustGiving - Sponsor me now!' />
+      </a>
+    </div>
+    <script src="control.bundle.js"></script> 
   </body>
 </html>

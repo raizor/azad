@@ -5,19 +5,19 @@
 
 import Vue from 'vue';
 
-const defaults = [
+const settings = [
     {
-        id: 'show_where_are_my_buttons',
-        text: 'show "where are my buttons" help at top of amazon pages"',
-        default: true,
+        id: 'azad_show_where_are_my_buttons',
+        text: 'show "where are my buttons?"',
+        value: true,
     },
 ];
 
 function initialiseUi() {
     const vue_settings_app = new Vue({
-        el: '#azad_settings_row',
+        el: '#azad_settings',
         data: {
-            items: defaults,
+            items: settings,
         },
     });
 }
