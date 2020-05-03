@@ -28,7 +28,14 @@ function registerConnectionListener() {
                             advertiseYears();
                             break;
                         case 'statistics_update':
-                            control_port.postMessage(msg);
+                            try {
+                                control_port.postMessage(msg);
+                            } catch(ex) {
+                                console.log(
+                                    'could not post this message to control ' +
+                                    'port: ' + msg.action
+                                );
+                            }
                             break;
                         default:
                             console.warn('unknown action: ' + msg.action);

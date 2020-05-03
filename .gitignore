@@ -6,3 +6,4 @@ build-node
 azad.zip
 src/tests/azad_test_data
 tmp
+src/js/order.js
